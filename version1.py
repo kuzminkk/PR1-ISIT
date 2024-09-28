@@ -6,6 +6,7 @@ from sklearn.metrics import classification_report, accuracy_score
 from sklearn.model_selection import cross_val_score
 import numpy as np
 
+#Подготовка данных
 data = pd.read_csv('/content/encoded-data.csv')
 
 def time_to_minutes(time_str):
@@ -51,7 +52,6 @@ for k in k_values:
     scores = cross_val_score(knn, X_train_scaled, y_train, cv=5)
     cross_val_scores.append(scores.mean()) 
 
-# Лучшее значение k
 best_k = k_values[np.argmax(cross_val_scores)] 
 print(f'Лучшее значение k: {best_k}')
 
@@ -60,17 +60,12 @@ print(f'Лучшее значение k: {best_k}')
 knn = KNeighborsClassifier(n_neighbors=best_k)
 knn.fit(X_train_scaled, y_train) 
 
-# Предсказание
 y_pred = knn.predict(X_test_scaled) 
 
-
-
-
-# Пример предсказания для новых данных
-# Оценка модели
 print(f'Accuracy: {accuracy_score(y_test, y_pred)}')
 print(classification_report(y_test, y_pred))
 
+#Тестирование
 new_data = {
     'gender': 'Мужчина',
     'age': 30,
@@ -91,21 +86,16 @@ new_data = {
     'zodiac': 'Овен'
 }
 
-# Преобразуем новые данные в формат для модели
 new_data_df = pd.DataFrame([new_data])
 new_data_df['wake_time'] = new_data_df['wake_time'].apply(time_to_minutes)
 
-#Преобразуем категориальные данные
 for column in categorical_columns:
     new_data_df[column] = label_encoders[column].transform(new_data_df[column])
 
-# Стандартизируем новые данные
 new_data_scaled = scaler.transform(new_data_df)
 
-# Предсказание для новых данных
 prediction = knn.predict(new_data_scaled)
 
-# Обратное преобразование предсказания в исходную категорию
 predicted_drink = le_drink.inverse_transform(prediction) 
 
 print(f'Предсказание для новых данных: {predicted_drink[0]}') 
