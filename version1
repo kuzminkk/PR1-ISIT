@@ -10,7 +10,7 @@ data = pd.read_csv('/content/encoded-data.csv')
 
 def time_to_minutes(time_str):
     hours, minutes = map(int, time_str.split(':'))
-    return hours * 60 + minutes # Возвращаем время в минутах
+    return hours * 60 + minutes
 
 data['wake_time'] = data['wake_time'].apply(time_to_minutes)
 
@@ -31,7 +31,7 @@ le_drink = LabelEncoder()
 data['preferred_drink'] = le_drink.fit_transform(data['preferred_drink'])
 
 
-X = data.drop('preferred_drink', axis=1)  # Все, кроме preferred_drink
-y = data['preferred_drink']  # Целевая переменная
+X = data.drop('preferred_drink', axis=1)
+y = data['preferred_drink']
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
