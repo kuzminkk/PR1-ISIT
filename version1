@@ -12,7 +12,7 @@ def time_to_minutes(time_str):
     hours, minutes = map(int, time_str.split(':'))
     return hours * 60 + minutes # Возвращаем время в минутах
 
-data['wake_time'] = data['wake_time'].apply(time_to_minutes) # Применяем функцию и записываем значения в столбец wake_time
+data['wake_time'] = data['wake_time'].apply(time_to_minutes)
 
 print(data.head())
 
