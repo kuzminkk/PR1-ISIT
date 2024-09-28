@@ -1,0 +1,37 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import classification_report, accuracy_score
+from sklearn.model_selection import cross_val_score
+import numpy as np
+
+data = pd.read_csv('/content/encoded-data.csv')
+
+def time_to_minutes(time_str):
+    hours, minutes = map(int, time_str.split(':'))
+    return hours * 60 + minutes # Возвращаем время в минутах
+
+data['wake_time'] = data['wake_time'].apply(time_to_minutes) # Применяем функцию и записываем значения в столбец wake_time
+
+print(data.head())
+
+label_encoders = {}
+categorical_columns = ['gender', 'smoking', 'eye_color', 'well_slept',
+                       'chronotype', 'near_coffee_shop', 'gourmet',
+                       'office_worker', 'homebody', 'chronic_diseases',
+                       'handedness', 'zodiac']
+
+for column in categorical_columns:
+    le = LabelEncoder()
+    data[column] = le.fit_transform(data[column])
+    label_encoders[column] = le
+
+le_drink = LabelEncoder()
+data['preferred_drink'] = le_drink.fit_transform(data['preferred_drink'])
+
+
+X = data.drop('preferred_drink', axis=1)  # Все, кроме preferred_drink
+y = data['preferred_drink']  # Целевая переменная
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
