@@ -39,29 +39,29 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 # Стандартизация данных
 scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train) # Здесь вычисляются среднее и стандартное отклонение для каждого признака на обучающей выборке, и затем все признаки стандартизируются.
-X_test_scaled = scaler.transform(X_test) # Для тестовых данных применяется те же параметры стандартизации (среднее и стандартное отклонение), что были рассчитаны на обучающих данных. Это необходимо для того, чтобы сохранить консистентность преобразований.
+X_train_scaled = scaler.fit_transform(X_train) 
+X_test_scaled = scaler.transform(X_test) 
 
 # Выбор оптимального k с помощью кросс-валидации
-k_values = range(1, 21)  # Тестируем значения k от 1 до 20
-cross_val_scores = [] # Создаем пусто список для хранения результатов кросс-валидации для каждого значения k
+k_values = range(1, 21)  
+cross_val_scores = [] 
 
 for k in k_values:
     knn = KNeighborsClassifier(n_neighbors=k)
     scores = cross_val_score(knn, X_train_scaled, y_train, cv=5)
-    cross_val_scores.append(scores.mean()) # Вычисляется среднее значение точности для каждого значения k (scores.mean()) и добавляется в список cross_val_scores.
+    cross_val_scores.append(scores.mean()) 
 
-# Найдем лучшее значение k
-best_k = k_values[np.argmax(cross_val_scores)] # np.argmax(cross_val_scores) находит индекс максимального значения в списке cross_val_scores, то есть то значение k, для которого средняя точность была максимальной.
+# Лучшее значение k
+best_k = k_values[np.argmax(cross_val_scores)] 
 print(f'Лучшее значение k: {best_k}')
 
 
 # Обучение модели k-NN с выбранным значением k
-knn = KNeighborsClassifier(n_neighbors=best_k) #Создаётся объект модели k-NN (k-ближайших соседей) из библиотеки scikit-learn, который указывает количество ближайших соседий (k=5)
-knn.fit(X_train_scaled, y_train) # Модель обучается на тренировочных данных
+knn = KNeighborsClassifier(n_neighbors=best_k)
+knn.fit(X_train_scaled, y_train) 
 
 # Предсказание
-y_pred = knn.predict(X_test_scaled) # Выполняется предсказание для тестовых данных. Результатом является массив y_pred, содержащий предсказанные классы для каждого примера из тестовой выборки
+y_pred = knn.predict(X_test_scaled) 
 
 
 
@@ -80,7 +80,7 @@ new_data = {
     'stress_level': 40,
     'well_slept': 'Да',
     'chronotype': 'Жаворонок',
-    'wake_time': '07:00',  # Это нужно будет изменить перед вводом
+    'wake_time': '07:00', 
     'sleep_on_average': 7,
     'near_coffee_shop': 'Да',
     'gourmet': 'Нет',
@@ -103,10 +103,9 @@ for column in categorical_columns:
 new_data_scaled = scaler.transform(new_data_df)
 
 # Предсказание для новых данных
-#Используем метод .predict() для предсказания класса на основе новых данных. Модель возвращает числовое значение, которое соответствует предсказанному классу напитка.
 prediction = knn.predict(new_data_scaled)
 
 # Обратное преобразование предсказания в исходную категорию
-predicted_drink = le_drink.inverse_transform(prediction) #Получаем имя напитка "Чай" или "Кофе"
+predicted_drink = le_drink.inverse_transform(prediction) 
 
-print(f'Предсказание для новых данных: {predicted_drink[0]}') #Выводим предсказанный напиток в удобочитаемом виде в консоль
+print(f'Предсказание для новых данных: {predicted_drink[0]}') 
