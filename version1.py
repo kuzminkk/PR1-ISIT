@@ -62,7 +62,7 @@ knn.fit(X_train_scaled, y_train)
 
 y_pred = knn.predict(X_test_scaled) 
 
-print(f'Accuracy: {accuracy_score(y_test, y_pred)}')
+print(f'Точность: {accuracy_score(y_test, y_pred)}')
 print(classification_report(y_test, y_pred))
 
 #Тестирование
